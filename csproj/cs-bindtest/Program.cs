@@ -25,4 +25,13 @@ unsafe
     }
 }
 
-Console.WriteLine("Hello, World!");
+unsafe
+{
+    var str = "foobarbaz:あいうえお"; // ENG:JPN(Unicode, testing for UTF16)
+    fixed (char* p = str)
+    {
+        NativeMethods.csharp_to_rust_string((ushort*)p, str.Length);
+    }
+}
+
+Console.WriteLine("\nTest finished.");

@@ -97,6 +97,13 @@ pub unsafe extern "C" fn free_u8_string(buffer: *mut ByteBuffer) {
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn csharp_to_rust_string(utf16_str: *const u16, utf16_len: i32) {
+    let slice = std::slice::from_raw_parts(utf16_str, utf16_len as usize);
+    let str = String::from_utf16(slice).unwrap();
+    println!("{}", str);
+}
+
+#[no_mangle]
 pub extern "C" fn alloc_i32_buffer() -> *mut ByteBuffer {
     let vec: Vec<i32> = vec![1, 64, 1024, 4096, 100000];
     let buf = ByteBuffer::from_vec_struct(vec);
