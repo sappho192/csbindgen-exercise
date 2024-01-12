@@ -81,3 +81,17 @@ impl ByteBuffer {
 pub extern "C" fn my_add(x: i32, y: i32) -> i32 {
     x + y
 }
+
+#[no_mangle]
+pub extern "C" fn alloc_i32_buffer() -> *mut ByteBuffer {
+    let vec: Vec<i32> = vec![1, 64, 1024, 4096, 100000];
+    let buf = ByteBuffer::from_vec_struct(vec);
+    Box::into_raw(Box::new(buf))
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn free_i32_buffer(buffer: *mut ByteBuffer) {
+    let buf = Box::from_raw(buffer);
+    // drop inner buffer, if you need Vec<i32>, use buf.destroy_into_vec_struct::<i32>() instead.
+    buf.destroy();
+}
