@@ -3,6 +3,6 @@ fn main() {
         .input_extern_file("src/lib.rs")
         .csharp_dll_name("mylib")
         .csharp_class_name("NativeMethods")
-        .generate_csharp_file("NativeMethods.cs")
+        .generate_csharp_file("./csproj/cs-bindtest/NativeMethods.cs")
         .unwrap();
 }

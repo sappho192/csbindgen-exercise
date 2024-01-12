@@ -6,6 +6,25 @@
     <RootNamespace>cs_bindtest</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="mylib.dll" />
+    <None Remove="mylib.dll.exp" />
+    <None Remove="mylib.dll.lib" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="mylib.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="mylib.dll.exp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="mylib.dll.lib">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 
 </Project>

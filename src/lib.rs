@@ -83,6 +83,20 @@ pub extern "C" fn my_add(x: i32, y: i32) -> i32 {
 }
 
 #[no_mangle]
+pub extern "C" fn alloc_u8_string() -> *mut ByteBuffer {
+    let str = format!("foo bar baz");
+    let buf = ByteBuffer::from_vec(str.into_bytes());
+    Box::into_raw(Box::new(buf))
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn free_u8_string(buffer: *mut ByteBuffer) {
+    let buf = Box::from_raw(buffer);
+    // drop inner buffer, if you need String, use String::from_utf8_unchecked(buf.destroy_into_vec()) instead.
+    buf.destroy();
+}
+
+#[no_mangle]
 pub extern "C" fn alloc_i32_buffer() -> *mut ByteBuffer {
     let vec: Vec<i32> = vec![1, 64, 1024, 4096, 100000];
     let buf = ByteBuffer::from_vec_struct(vec);
