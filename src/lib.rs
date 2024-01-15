@@ -116,3 +116,11 @@ pub unsafe extern "C" fn free_i32_buffer(buffer: *mut ByteBuffer) {
     // drop inner buffer, if you need Vec<i32>, use buf.destroy_into_vec_struct::<i32>() instead.
     buf.destroy();
 }
+
+#[no_mangle]
+pub unsafe extern "C" fn csharp_to_rust_i32s(buffer: *const i32, len: i32) {
+    let slice = std::slice::from_raw_parts(buffer, len as usize);
+    let vec = slice.to_vec();
+    println!("{:?}", vec);
+}
+

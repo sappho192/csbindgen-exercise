@@ -34,4 +34,14 @@ unsafe
     }
 }
 
+unsafe
+{
+    Console.WriteLine("Sending int array to rust...");
+    var data = new int[] { 25906, 8702, 7801, 25856 };
+    fixed (int* p = data)
+    {
+        NativeMethods.csharp_to_rust_i32s(p, data.Length);
+    }
+}
+
 Console.WriteLine("\nTest finished.");
