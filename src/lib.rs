@@ -147,15 +147,15 @@ lazy_static! {
 #[no_mangle]
 pub unsafe extern "C" fn tokenizer_decode(buffer: *const u32, len: i32) -> *mut ByteBuffer {
     let slice = std::slice::from_raw_parts(buffer, len as usize);
-    let vec = slice.to_vec();
-    println!("{:?}", vec);
+    // let vec = slice.to_vec();
+    // println!("{:?}", vec);
     let decoded = TOKENIZER.decode(slice, true);
     if decoded.is_err() {
         // return empty string
         return Box::into_raw(Box::new(ByteBuffer::from_vec(vec![])));
     }
     let str = decoded.unwrap();
-    println!("{:?}", str);
+    // println!("{:?}", str);
 
     let buf = ByteBuffer::from_vec(str.into_bytes());
     Box::into_raw(Box::new(buf))
