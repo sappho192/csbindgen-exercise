@@ -37,10 +37,29 @@ unsafe
 unsafe
 {
     Console.WriteLine("Sending int array to rust...");
-    var data = new int[] { 25906, 8702, 7801, 25856 };
-    fixed (int* p = data)
+    var data = new uint[] { 25906, 8702, 7801, 25856 };
+    fixed (uint* p = data)
     {
-        NativeMethods.csharp_to_rust_i32s(p, data.Length);
+        NativeMethods.csharp_to_rust_u32_array(p, data.Length);
+    }
+}
+
+unsafe
+{
+    Console.WriteLine("Testing tokenizer...");
+    var data = new uint[] { 25906, 8702, 7801, 25856 };
+    fixed (uint* p = data)
+    {
+        var decoded = NativeMethods.tokenizer_decode(p, data.Length);
+        try
+        {
+            var str = Encoding.UTF8.GetString(decoded->AsSpan());
+            Console.WriteLine(str);
+        }
+        finally
+        {
+            NativeMethods.free_u8_string(decoded);
+        }
     }
 }
 

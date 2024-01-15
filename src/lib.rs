@@ -1,4 +1,5 @@
-// lib.rs, simple FFI code
+// lib.rs
+
 #[repr(C)]
 pub struct ByteBuffer {
     ptr: *mut u8,
@@ -118,9 +119,45 @@ pub unsafe extern "C" fn free_i32_buffer(buffer: *mut ByteBuffer) {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn csharp_to_rust_i32s(buffer: *const i32, len: i32) {
+pub unsafe extern "C" fn csharp_to_rust_u32_array(buffer: *const u32, len: i32) {
     let slice = std::slice::from_raw_parts(buffer, len as usize);
     let vec = slice.to_vec();
     println!("{:?}", vec);
+}
+
+// Tokenizer stuff starts here
+use std::fs::File;
+use std::io::Read;
+use tokenizers::tokenizer::Tokenizer;
+use lazy_static::lazy_static;
+
+// Initialize the tokenizer
+lazy_static! {
+    static ref TOKENIZER: Tokenizer = {
+        // Read the file path from the text file
+        let mut file = File::open("tokenizer.path.txt").expect("Failed to find tokenizer.path.txt file");
+        let mut path = String::new();
+        file.read_to_string(&mut path).expect("Failed to read tokenizer.path.txt file");
+
+        Tokenizer::from_file(path).unwrap()
+    };
+}
+
+// Returns u8string. Caller must free the memory
+#[no_mangle]
+pub unsafe extern "C" fn tokenizer_decode(buffer: *const u32, len: i32) -> *mut ByteBuffer {
+    let slice = std::slice::from_raw_parts(buffer, len as usize);
+    let vec = slice.to_vec();
+    println!("{:?}", vec);
+    let decoded = TOKENIZER.decode(slice, true);
+    if decoded.is_err() {
+        // return empty string
+        return Box::into_raw(Box::new(ByteBuffer::from_vec(vec![])));
+    }
+    let str = decoded.unwrap();
+    println!("{:?}", str);
+
+    let buf = ByteBuffer::from_vec(str.into_bytes());
+    Box::into_raw(Box::new(buf))
 }
 
